@@ -1,0 +1,40 @@
+# Name of this GitHub Actions workflow.
+name: Semgrep
+
+on:
+  # Scan changed files in PRs (diff-aware scanning):
+  pull_request: {}
+  # Scan mainline branches and report all findings:
+  push:
+    branches: ["master", "main"]
+  # Schedule the CI job (this method uses cron syntax):
+  schedule:
+    - cron: '57 21 * * *' # Sets Semgrep to scan every day at 21:57 UTC.
+    # It is recommended to change the schedule to a random time.
+
+jobs:
+  semgrep:
+    # User definable name of this GitHub Actions job.
+    name: Scan
+    # If you are self-hosting, change the following `runs-on` value:
+    runs-on: ubuntu-latest
+
+    container:
+      # A Docker image with Semgrep installed. Do not change this.
+      image: returntocorp/semgrep
+
+    # Skip any PR created by dependabot to avoid permission issues:
+    if: (github.actor != 'dependabot[bot]')
+
+    steps:
+      # Fetch project source with GitHub Actions Checkout.
+      - uses: actions/checkout@v3
+      # Run the "semgrep ci" command on the command line of the docker image.
+      # Actually running `semgrep scan` to reproduce https://github.com/returntocorp/semgrep/issues/7661
+      #   --error fails to explain a nonzero exit status.
+      - run: semgrep scan --config auto --error --verbose .
+        env:
+          # Connect to Semgrep Cloud Platform through your SEMGREP_APP_TOKEN.
+          # Generate a token from Semgrep Cloud Platform > Settings
+          # and add it to your GitHub secrets.
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
