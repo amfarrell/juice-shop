@@ -32,7 +32,7 @@ jobs:
       # Run the "semgrep ci" command on the command line of the docker image.
       # Actually running `semgrep scan` to reproduce https://github.com/returntocorp/semgrep/issues/7661
       #   --error fails to explain a nonzero exit status.
-      - run: semgrep ci --config auto .
+      - run: semgrep ci --config auto
         env:
           # Connect to Semgrep Cloud Platform through your SEMGREP_APP_TOKEN.
           # Generate a token from Semgrep Cloud Platform > Settings
