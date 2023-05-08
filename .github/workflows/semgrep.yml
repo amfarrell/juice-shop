@@ -34,7 +34,5 @@ jobs:
       #   --error fails to explain a nonzero exit status.
       - run: semgrep ci
         env:
-          # Connect to Semgrep Cloud Platform through your SEMGREP_APP_TOKEN.
-          # Generate a token from Semgrep Cloud Platform > Settings
-          # and add it to your GitHub secrets.
-          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+          # Add the rules that Semgrep uses by setting the SEMGREP_RULES environment variable.
+          SEMGREP_RULES: p/default
